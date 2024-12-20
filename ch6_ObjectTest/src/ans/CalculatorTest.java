@@ -11,19 +11,20 @@ public class CalculatorTest {
 		Calculator calculator = new Calculator();
 		
 		double result1 = 0;
-		
+		int num1 = 5;
+		int num2 = 3;
 
 //		메서드 호출 방법 call
-		result1 = calculator.add(5, 3);
+		result1 = calculator.add(num1, num2);
 		System.out.println(result1);
 
-		result1 = calculator.subtract(5, 3);
+		result1 = calculator.subtract(num1, num2);
 		System.out.println(result1);
 
-		result1 = calculator.multiplication(5, 3);
+		result1 = calculator.multiplication(num1, num2);
 		System.out.println(result1);
 
-		result1 = calculator.division(5, 3);
+		result1 = calculator.division(num1, num2);
 		System.out.println(result1);
 	}
 
