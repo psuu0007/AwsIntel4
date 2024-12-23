@@ -8,6 +8,7 @@ public class Point {
 	public Point() {
 		// TODO Auto-generated constructor stub
 		super();
+		System.out.println(this);
 		System.out.println("Point()");
 	}
 	
