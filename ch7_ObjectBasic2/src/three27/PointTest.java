@@ -8,6 +8,12 @@ public class PointTest {
 		p.x = 10;
 		p.y = 20;
 		
+		System.out.println();
+		System.out.println(1);
+		System.out.println(1.0);
+		System.out.println('a');
+		System.out.println("a");
+		
 		System.out.println(p.getLocation());
 		
 		Point3D p3d = new Point3D();
