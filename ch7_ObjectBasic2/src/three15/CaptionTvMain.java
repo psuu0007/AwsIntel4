@@ -14,7 +14,7 @@ public class CaptionTvMain {
 		captionTv.displayCaption("Hello World"); 
 		
 		captionTv.caption = true;
-		captionTv.displayCaption("Hello World");
+		captionTv.displayCaption("Hello World2");
 		
 	}
 	
