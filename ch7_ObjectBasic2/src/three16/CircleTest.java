@@ -12,7 +12,7 @@ public class CircleTest {
 //		c.y = 5;
 		c.point.x = 2;
 		c.point.y = 4;
-		
+
 		c.r = 3;
 		
 //		System.out.println(c.x);
