@@ -13,8 +13,6 @@ public class InterMain1 {
 		
 		tiger.info();
 		
-		
-		
 	}
 
 }
