@@ -17,10 +17,14 @@ public class WrapperBasic1 {
 		
 		int n = 0;
 		
-		System.out.println(n + str);
+//		System.out.println(n * str);
+//		문자열을 숫자로 변환하기
+		int tempStrNum = Integer.parseInt(str);
 		
+		System.out.println(n * tempStrNum);
 		
-		
+		Double numDouble = Double.valueOf("30.1456");
+		System.out.println(numDouble * 10);
 	}
 
 }
