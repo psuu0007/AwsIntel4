@@ -22,6 +22,10 @@ public class EqualBasic1 {
 		
 		System.out.println("str3 == str2 결과: " + (str3 == str2));
 		System.out.println("str3 == str4 결과: " + (str3 == str4));
+		System.out.println("str3 == str4 결과: " + (str3.equals(str4)));
+		
+//		System.out.println(str3);
+//		System.out.println(str4);
 		
 		System.out.println("str1.hashCode()");
 		System.out.println(str1.hashCode());
