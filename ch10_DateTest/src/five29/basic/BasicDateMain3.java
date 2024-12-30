@@ -13,7 +13,7 @@ public class BasicDateMain3 {
 		System.out.println("올 해의 년도: " + year);
 		
 		int month = today.get(Calendar.MONTH);
-		System.out.println("월: " + (month + 1));
+		System.out.println("월: " + month);
 		
 		System.out.println("이 해의 몇 째주: " + today.get(Calendar.WEEK_OF_YEAR));
 		
