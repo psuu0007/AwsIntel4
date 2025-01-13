@@ -58,8 +58,8 @@ ex: 수강을 신청했다, 강의를 할 것이다 라는 식으로 표현해�
 두 개 이상의 멤버쉽이 존재하는지를 파악하는 것이 중요하다
 https://jie0025.tistory.com/112(IE표기법에서 참고하자)
 
-1:1(ont to one)
-1:M(ont to many)
+1:1(one to one)
+1:M(one to many)
 M:M(many to many)
 
 
