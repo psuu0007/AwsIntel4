@@ -8,19 +8,18 @@
 <title>InsertTitle</title>
 
 <style type="text/css">
-#asdfg{
-	width: 200px;
-	background: blue;
-}
+
 </style>
+
+<script type="text/javascript">
+
+</script>
 
 </head>
 
 <body>
 
-	<div id='asdfg'>
-		rdgf
-	</div>
+
 
 </body>
 </html>
