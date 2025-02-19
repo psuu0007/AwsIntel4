@@ -56,6 +56,8 @@ public class MemberAddServlet extends HttpServlet{
 		String user = "edu";
 		String password = "edu12";
 
+		req.setCharacterEncoding("UTF-8");
+		
 		String emailStr = req.getParameter("email");
 		String pwdStr = req.getParameter("password");
 		String nameStr = req.getParameter("mname");
@@ -77,21 +79,25 @@ public class MemberAddServlet extends HttpServlet{
 			
 			pstmt.executeUpdate();
 			
-			res.setContentType("text/html");
-			res.setCharacterEncoding("UTF-8");
+			res.sendRedirect("./list");
 			
-			PrintWriter out = res.getWriter();
-			
-			String htmlStr = "";
-			
-			htmlStr += "<!DOCTYPE html><html><head><title>회원등록결과</title></head>";
-			htmlStr += "<body>";
-			htmlStr += "<p>등록 성공입니다!!</p>";
-			
-			htmlStr += "</body>";
-			htmlStr += "</html>";
-			
-			out.println(htmlStr);
+//			res.setContentType("text/html");
+//			res.setCharacterEncoding("UTF-8");
+//			
+//			PrintWriter out = res.getWriter();
+//			
+//			String htmlStr = "";
+//			
+//			htmlStr += "<!DOCTYPE html><html><head><title>회원등록결과</title>";
+//			htmlStr += "<meta http-equiv='Refresh' content='5; url=list'></head>";
+//			
+//			htmlStr += "<body>";
+//			htmlStr += "<p>등록 성공입니다!!</p>";
+//			
+//			htmlStr += "</body>";
+//			htmlStr += "</html>";
+//			
+//			out.println(htmlStr);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
