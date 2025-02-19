@@ -9,11 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 public class MemberUpdateServlet extends HttpServlet{
 
 	@Override
@@ -25,10 +27,12 @@ public class MemberUpdateServlet extends HttpServlet{
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String driver = this.getInitParameter("driver");
-		String url = this.getInitParameter("url");
-		String user = this.getInitParameter("user");
-		String password = this.getInitParameter("password");
+		ServletContext sc = this.getServletContext();
+		
+		String driver = sc.getInitParameter("driver");
+		String url = sc.getInitParameter("url");
+		String user = sc.getInitParameter("user");
+		String password = sc.getInitParameter("password");
 		
 //		String str = req.getParameter("mNo");
 //		int mNo = Integer.parseInt(str);
@@ -83,7 +87,8 @@ public class MemberUpdateServlet extends HttpServlet{
 				+ "'><br>";
 			htmlStr += "가입일: " + creDate + "<br>";
 			htmlStr += "<input type='submit' value='저장'>";
-			htmlStr += "<input type='reset' value='취소'>";
+			htmlStr += "<input type='button' value='취소' "
+					+ "onclick='location.href=\"./list\"'>";
 			htmlStr += "</form>";
 			htmlStr += "</body>";
 			htmlStr += "</html>";
@@ -141,10 +146,12 @@ public class MemberUpdateServlet extends HttpServlet{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
-		String driver = this.getInitParameter("driver");
-		String url = this.getInitParameter("url");
-		String user = this.getInitParameter("user");
-		String password = this.getInitParameter("password");
+		ServletContext sc = this.getServletContext();
+		
+		String driver = sc.getInitParameter("driver");
+		String url = sc.getInitParameter("url");
+		String user = sc.getInitParameter("user");
+		String password = sc.getInitParameter("password");
 		
 		String email = req.getParameter("email");
 		String name = req.getParameter("mname");
