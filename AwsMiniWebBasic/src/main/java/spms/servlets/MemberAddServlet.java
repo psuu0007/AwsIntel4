@@ -23,8 +23,8 @@ public class MemberAddServlet extends HttpServlet{
 		// TODO Auto-generated method stub
 		System.out.println("doGet을 탄다");
 		
-//		res.setContentType("text/html");
-//		res.setCharacterEncoding("UTF-8");
+		res.setContentType("text/html");
+		res.setCharacterEncoding("UTF-8");
 		
 		PrintWriter out = res.getWriter();
 		
@@ -62,7 +62,6 @@ public class MemberAddServlet extends HttpServlet{
 		String user = sc.getInitParameter("user");
 		String password = sc.getInitParameter("password");
 
-//		req.setCharacterEncoding("UTF-8");
 		
 		String emailStr = req.getParameter("email");
 		String pwdStr = req.getParameter("password");

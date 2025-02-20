@@ -21,7 +21,6 @@ public class MemberDeleteServlet extends HttpServlet {
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
-		req.setCharacterEncoding("UTF-8");
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;

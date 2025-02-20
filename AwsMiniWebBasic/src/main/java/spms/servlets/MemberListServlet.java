@@ -4,47 +4,57 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import jakarta.servlet.GenericServlet;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/member/list")
-public class MemberListServlet extends GenericServlet{
+public class MemberListServlet extends HttpServlet{
 
 	@Override
-	public void service(ServletRequest req, ServletResponse res) 
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
 		Connection conn = null;
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		String user = "edu";
-		String password = "edu12";
+		ServletContext sc = this.getServletContext();
+		
+		String driver = sc.getInitParameter("driver");
+		String url = sc.getInitParameter("url");
+		String user = sc.getInitParameter("user");
+		String password = sc.getInitParameter("password");
 
 		try {
 //			1JDBC 드라이버 등록
-			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Class.forName(driver);
 //			2DB연결
 			conn = DriverManager.getConnection(url, user, password);
-//			3SQL 실행 객체 준비
-			stmt = conn.createStatement();
-			
+
 			String sql = "SELECT MNO, MNAME, EMAIL, CRE_DATE"
 					+ " FROM MEMBERS"
 					+ " ORDER BY MNO ASC";
-//			4DB에 sql문 보내기
-			rs = stmt.executeQuery(sql);
 			
-//			res.setContentType("text/html");
-//			res.setCharacterEncoding("UTF-8");
+//			3SQL 실행 객체 준비
+			pstmt = conn.prepareStatement(sql);
+			
+//			4DB에 sql문 보내기
+			rs = pstmt.executeQuery();
+			
+			res.setContentType("text/html");
+			res.setCharacterEncoding("UTF-8");
 			
 			PrintWriter out = res.getWriter();
 
@@ -99,9 +109,9 @@ public class MemberListServlet extends GenericServlet{
 				}
 			}
 			
-			if(stmt != null) {
+			if(pstmt != null) {
 				try {
-					stmt.close();
+					pstmt.close();
 				} catch (SQLException e) {
 					// TODO: handle exception
 					e.printStackTrace();
@@ -118,10 +128,14 @@ public class MemberListServlet extends GenericServlet{
 			}
 			
 		} // finally
-		
-		
+	
 	}
 
-	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) 
+		throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		super.doPost(req, res);
+	}
 	
 }
