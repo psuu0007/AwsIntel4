@@ -43,8 +43,8 @@ public class MemberListServlet extends GenericServlet{
 //			4DB에 sql문 보내기
 			rs = stmt.executeQuery(sql);
 			
-			res.setContentType("text/html");
-			res.setCharacterEncoding("UTF-8");
+//			res.setContentType("text/html");
+//			res.setCharacterEncoding("UTF-8");
 			
 			PrintWriter out = res.getWriter();
 
@@ -67,12 +67,16 @@ public class MemberListServlet extends GenericServlet{
 			while (rs.next() == true) {
 				out.println(
 					rs.getInt("MNO") + "," +
-					"<a href='./update?mNo=" +
-						rs.getInt("MNO") +
-					"'>" + 	
+					"<a href='./update?mNo=" + 
+							rs.getInt("MNO") + 
+					"'>" +
 					rs.getString("MNAME") + "</a>," +
-					rs.getString("EMAIL") + "," +
-					rs.getString("CRE_DATE") + "<br>"
+					rs.getString("EMAIL") + "," + 
+					rs.getDate("CRE_DATE") + 
+					"<a href='./delete?mNo=" + 
+						rs.getInt("MNO") + 
+					"'>[삭제]</a>" + 
+					"<br>"
 				);
 			}
 			

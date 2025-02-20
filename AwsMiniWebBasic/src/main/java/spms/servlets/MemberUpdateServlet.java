@@ -11,11 +11,13 @@ import java.util.Date;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet{
 
 	@Override
@@ -87,6 +89,10 @@ public class MemberUpdateServlet extends HttpServlet{
 				+ "'><br>";
 			htmlStr += "가입일: " + creDate + "<br>";
 			htmlStr += "<input type='submit' value='저장'>";
+			
+			htmlStr += "<input type='button' value='삭제' "
+					+ "onclick='location.href=\"./delete?mNo="+ mNo +"\"'> ";
+			
 			htmlStr += "<input type='button' value='취소' "
 					+ "onclick='location.href=\"./list\"'>";
 			htmlStr += "</form>";

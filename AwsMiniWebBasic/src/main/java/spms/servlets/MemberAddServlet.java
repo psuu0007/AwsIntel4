@@ -7,11 +7,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet{
 
 	@Override
@@ -20,8 +23,8 @@ public class MemberAddServlet extends HttpServlet{
 		// TODO Auto-generated method stub
 		System.out.println("doGet을 탄다");
 		
-		res.setContentType("text/html");
-		res.setCharacterEncoding("UTF-8");
+//		res.setContentType("text/html");
+//		res.setCharacterEncoding("UTF-8");
 		
 		PrintWriter out = res.getWriter();
 		
@@ -52,11 +55,14 @@ public class MemberAddServlet extends HttpServlet{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		String user = "edu";
-		String password = "edu12";
+		ServletContext sc = getServletContext();
 
-		req.setCharacterEncoding("UTF-8");
+		String driver = sc.getInitParameter("driver");
+		String url = sc.getInitParameter("url");
+		String user = sc.getInitParameter("user");
+		String password = sc.getInitParameter("password");
+
+//		req.setCharacterEncoding("UTF-8");
 		
 		String emailStr = req.getParameter("email");
 		String pwdStr = req.getParameter("password");
