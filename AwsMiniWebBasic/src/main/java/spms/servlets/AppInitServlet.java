@@ -2,21 +2,15 @@ package spms.servlets;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
-import spms.dto.MemberDto;
 
 public class AppInitServlet extends HttpServlet{
-
+//기능 분리?
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		// TODO Auto-generated method stub
