@@ -72,6 +72,10 @@ public class LoginServlet extends HttpServlet{
 				session.setAttribute("memberDto", memberDto);
 				
 				res.sendRedirect("../member/list");
+			}else {
+				RequestDispatcher rd = req.getRequestDispatcher("./LoginFail.jsp");
+				
+				rd.forward(req, res);
 			}
 			
 		} catch (Exception e) {

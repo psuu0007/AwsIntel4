@@ -11,7 +11,9 @@
 	SPMS(Simple Project Management System)
 	<span style="float: right;">
 		<%=memberDto.getName()%>
-		
+		<a style="color: white;" href="<%=request.getContextPath()%>/auth/logout">
+			로그아웃
+		</a>
 	</span>
 	
 </div>
