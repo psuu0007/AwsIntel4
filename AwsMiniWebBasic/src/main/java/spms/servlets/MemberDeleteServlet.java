@@ -2,10 +2,10 @@ package spms.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,21 +25,14 @@ public class MemberDeleteServlet extends HttpServlet {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
-		ServletContext sc = this.getServletContext();
-
-		String driver = sc.getInitParameter("driver");
-		String url = sc.getInitParameter("url");
-		String user = sc.getInitParameter("user");
-		String password = sc.getInitParameter("password");
-
-		int mNo = Integer.parseInt(req.getParameter("mNo"));
+		int mNo = Integer.parseInt(req.getParameter("no"));
 
 		String sql = "";
 
 		try {
-			Class.forName(driver);
-			System.out.println("오라클 드라이버 로드");
-			conn = DriverManager.getConnection(url, user, password);
+			ServletContext sc = this.getServletContext();
+			
+			conn = (Connection) sc.getAttribute("conn");
 
 			sql = "DELETE FROM MEMBERS";
 			sql += " WHERE MNO = ?";
@@ -52,12 +45,13 @@ public class MemberDeleteServlet extends HttpServlet {
 
 			res.sendRedirect("./list");
 			
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			req.setAttribute("error", e);
+			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
+			rd.forward(req, res);
 		} finally {
 
 			if (pstmt != null) {
@@ -68,16 +62,8 @@ public class MemberDeleteServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+			
+		} // finally 종료
 
 	}
 

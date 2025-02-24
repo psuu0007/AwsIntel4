@@ -1,12 +1,11 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,29 +20,8 @@ public class MemberAddServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("doGet을 탄다");
-		
-		res.setContentType("text/html");
-		res.setCharacterEncoding("UTF-8");
-		
-		PrintWriter out = res.getWriter();
-		
-		String htmlStr = "";
-		
-		htmlStr += "<!DOCTYPE html><html><head><title>회원등록</title></head>";
-		htmlStr += "<body>";
-		htmlStr += "<h1>회원등록</h1>";
-		htmlStr += "<form action='add' method='post'>";
-		htmlStr += "이름: <input type='text' name='mname'><br>";
-		htmlStr += "이메일: <input type='text' name='email'><br>";
-		htmlStr += "암호: <input type='password' name='password'><br>";
-		htmlStr += "<input type='submit' value='추가'>";
-		htmlStr += "<input type='reset' value='취소'>";
-		htmlStr += "</form>";
-		htmlStr += "</body>";
-		htmlStr += "</html>";
-		
-		out.println(htmlStr);
+		res.sendRedirect("../member/MemberForm.jsp");
+			
 	}
 	
 	@Override
@@ -57,24 +35,18 @@ public class MemberAddServlet extends HttpServlet{
 		
 		ServletContext sc = getServletContext();
 
-		String driver = sc.getInitParameter("driver");
-		String url = sc.getInitParameter("url");
-		String user = sc.getInitParameter("user");
-		String password = sc.getInitParameter("password");
-
-		
 		String emailStr = req.getParameter("email");
 		String pwdStr = req.getParameter("password");
 		String nameStr = req.getParameter("mname");
 		
 		try {
-//			JDBC 6단계
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(url, user, password);
+//			ServletContext sc = this.getServletContext();
+			
+			conn = (Connection)sc.getAttribute("conn");
 			
 			String sql = "INSERT INTO MEMBERS"
-				+ "(MNO, EMAIL, PWD, MNAME, CRE_DATE, MOD_DATE)"
-				+ "VALUES(MEMBERS_MNO_SEQ.NEXTVAL, ?, ?, ?, SYSDATE, SYSDATE)";
+					+ "(MNO, EMAIL, PWD, MNAME, CRE_DATE, MOD_DATE)"
+					+ "VALUES(MEMBERS_MNO_SEQ.NEXTVAL, ?, ?, ?, SYSDATE, SYSDATE)";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -84,31 +56,16 @@ public class MemberAddServlet extends HttpServlet{
 			
 			pstmt.executeUpdate();
 			
+			// 추가
 			res.sendRedirect("./list");
 			
-//			res.setContentType("text/html");
-//			res.setCharacterEncoding("UTF-8");
-//			
-//			PrintWriter out = res.getWriter();
-//			
-//			String htmlStr = "";
-//			
-//			htmlStr += "<!DOCTYPE html><html><head><title>회원등록결과</title>";
-//			htmlStr += "<meta http-equiv='Refresh' content='5; url=list'></head>";
-//			
-//			htmlStr += "<body>";
-//			htmlStr += "<p>등록 성공입니다!!</p>";
-//			
-//			htmlStr += "</body>";
-//			htmlStr += "</html>";
-//			
-//			out.println(htmlStr);
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			req.setAttribute("error", e);
+			RequestDispatcher dispatcher = req.getRequestDispatcher("/Error.jsp");
+			dispatcher.forward(req, res);
 		}finally {
 			if(pstmt != null) {
 				try {
@@ -119,16 +76,7 @@ public class MemberAddServlet extends HttpServlet{
 				}
 			}
 			
-			if(conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
-		}
+		} // finally 종료
 		
 	}
 	

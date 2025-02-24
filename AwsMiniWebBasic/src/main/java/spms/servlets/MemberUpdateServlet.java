@@ -1,20 +1,20 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import spms.dto.MemberDto;
 
 @SuppressWarnings("serial")
 @WebServlet("/member/update")
@@ -28,87 +28,61 @@ public class MemberUpdateServlet extends HttpServlet{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		ServletContext sc = this.getServletContext();
-		
-		String driver = sc.getInitParameter("driver");
-		String url = sc.getInitParameter("url");
-		String user = sc.getInitParameter("user");
-		String password = sc.getInitParameter("password");
-		
-//		String str = req.getParameter("mNo");
-//		int mNo = Integer.parseInt(str);
-		
-		int mNo = Integer.parseInt(req.getParameter("mNo"));
+
+
+		String mNo = "";
 		
 		String sql = "";
+		RequestDispatcher rd = null;
 		
-		System.out.println("오라클 드라이버 로드");
 		try {
-			Class.forName(driver);
+			mNo = req.getParameter("no");
+			int no = Integer.parseInt(mNo);
 			
-			conn = DriverManager.getConnection(url, user, password);
+			ServletContext sc = this.getServletContext();
 			
-			// 특정한 사람 정보 조회?
-			sql = "SELECT MNO, EMAIL, MNAME, CRE_DATE"
-				+ " FROM MEMBERS"
-				+ " WHERE MNO = ?";
-			
+			conn = (Connection) sc.getAttribute("conn");
+
+			sql = "SELECT MNO, EMAIL, MNAME, CRE_DATE";
+			sql += " FROM MEMBERS";
+			sql += " WHERE MNO =?";
+
 			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setInt(1, mNo);
+
+			pstmt.setInt(1, no);
 			
 			rs = pstmt.executeQuery();
-			
+
 			String mName = "";
 			String email = "";
 			Date creDate = null;
+
+			MemberDto memberDto = new MemberDto(); 
 			
-			while (rs.next()) {
+			if (rs.next()) {
 				mName = rs.getString("MNAME");
 				email = rs.getString("EMAIL");
 				creDate = rs.getDate("CRE_DATE");
+				
+				memberDto.setNo(no);
+				memberDto.setName(mName);
+				memberDto.setEmail(email);
+				memberDto.setCreatedDate(creDate);
+			}else{
+				throw new Exception("해당 번호의 회원을 찾을 수 없습니다.");
 			}
-
-			res.setContentType("text/html");
-			res.setCharacterEncoding("UTF-8");
 			
-			PrintWriter out = res.getWriter();
+			req.setAttribute("memberDto", memberDto);
+			rd = req.getRequestDispatcher("./MemberUpdateForm.jsp");
+			rd.forward(req, res);
 			
-			String htmlStr = "";
-			
-			htmlStr += "<!DOCTYPE html><html><head><title>회원정보</title></head>";
-			htmlStr += "<body>";
-			htmlStr += "<h1>회원정보 조회</h1>";
-			htmlStr += "<form action='./update' method='post'>";
-			htmlStr += "번호: <input type='text' name='mNo' value='" + mNo 
-				+ "' readonly='readonly'><br>";
-			htmlStr += "이름: <input type='text' name='mname' value='" + mName 
-				+ "'><br>";
-			htmlStr += "이메일: <input type='text' name='email' value='" + email 
-				+ "'><br>";
-			htmlStr += "가입일: " + creDate + "<br>";
-			htmlStr += "<input type='submit' value='저장'>";
-			
-			htmlStr += "<input type='button' value='삭제' "
-					+ "onclick='location.href=\"./delete?mNo="+ mNo +"\"'> ";
-			
-			htmlStr += "<input type='button' value='취소' "
-					+ "onclick='location.href=\"./list\"'>";
-			htmlStr += "</form>";
-			htmlStr += "</body>";
-			htmlStr += "</html>";
-			
-			out.println(htmlStr);
-			
-			System.out.println("수정 잘 되나?");
-			
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			req.setAttribute("error", e);
+			rd = req.getRequestDispatcher("/Error.jsp");
+			rd.forward(req, res);
 		}finally {
 			if(rs != null) {
 				try {
@@ -128,15 +102,6 @@ public class MemberUpdateServlet extends HttpServlet{
 				}
 			}
 			
-			if(conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
 		} // finally
 		
 	}
@@ -145,66 +110,47 @@ public class MemberUpdateServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse res)
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("회원 정보 수정 post");
-		
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		
-		ServletContext sc = this.getServletContext();
-		
-		String driver = sc.getInitParameter("driver");
-		String url = sc.getInitParameter("url");
-		String user = sc.getInitParameter("user");
-		String password = sc.getInitParameter("password");
-		
+
 		String email = req.getParameter("email");
-		String name = req.getParameter("mname");
-		String mNo = req.getParameter("mNo");
-		
+		String name = req.getParameter("name");
+		String no = req.getParameter("mNo");
+		int mNo = Integer.parseInt(no);
+
 		String sql = "";
-		
+
 		try {
-//			JDBC 6단계
-//			Class.forName("oracle.jdbc.driver.OracleDriver");
-			Class.forName(driver);
-			conn = DriverManager.getConnection(url, user, password);
-			
-			// 회원정보 특정대상 수정
+			ServletContext sc = this.getServletContext();
+
+			conn = (Connection) sc.getAttribute("conn");
+
 			sql = "UPDATE MEMBERS";
-			sql	+= " SET EMAIL=?, MNAME=?, MOD_DATE=SYSDATE";
-			sql	+= " WHERE MNO=?";
-			
+			sql += " SET EMAIL=?, MNAME=?, MOD_DATE=SYSDATE";
+			sql += " WHERE MNO =?";
+
 			pstmt = conn.prepareStatement(sql);
-			
+
 			pstmt.setString(1, email);
 			pstmt.setString(2, name);
-			pstmt.setString(3, mNo);
+			pstmt.setInt(3, mNo);
 			
 			pstmt.executeUpdate();
 			
 			res.sendRedirect("./list");
 			
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			req.setAttribute("error", e);
+			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
+			rd.forward(req, res);
 		}finally {
 			
 			if(pstmt != null) {
 				try {
 					pstmt.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
-			if(conn != null) {
-				try {
-					conn.close();
 				} catch (SQLException e) {
 					// TODO: handle exception
 					e.printStackTrace();

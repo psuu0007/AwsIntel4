@@ -91,7 +91,7 @@ public class MemberListServlet extends HttpServlet{
 			if(rs != null) {
 				try {
 					rs.close();
-					System.out.println("ResultSet 종료");
+//					System.out.println("ResultSet 종료");
 				} catch (SQLException e) {
 					// TODO: handle exception
 					e.printStackTrace();
@@ -101,7 +101,7 @@ public class MemberListServlet extends HttpServlet{
 			if(pstmt != null) {
 				try {
 					pstmt.close();
-					System.out.println("PreparedStatement(쿼리) 종료");
+//					System.out.println("PreparedStatement(쿼리) 종료");
 				} catch (SQLException e) {
 					// TODO: handle exception
 					e.printStackTrace();
