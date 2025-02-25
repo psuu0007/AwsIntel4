@@ -12,7 +12,6 @@
 	scope="request"
 	class="spms.dto.MemberDto"/>
 <body>
-<!-- 337 3번 문제 MemberUpdateServlet 화면출력 위임 -->
 	<jsp:include page="/Header.jsp" />
 	
 	<h1>회원정보</h1>

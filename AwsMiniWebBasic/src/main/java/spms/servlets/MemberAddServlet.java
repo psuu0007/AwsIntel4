@@ -33,14 +33,12 @@ public class MemberAddServlet extends HttpServlet{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
-		ServletContext sc = getServletContext();
-
 		String emailStr = req.getParameter("email");
 		String pwdStr = req.getParameter("password");
 		String nameStr = req.getParameter("mname");
 		
 		try {
-//			ServletContext sc = this.getServletContext();
+			ServletContext sc = this.getServletContext();
 			
 			conn = (Connection)sc.getAttribute("conn");
 			
@@ -56,7 +54,6 @@ public class MemberAddServlet extends HttpServlet{
 			
 			pstmt.executeUpdate();
 			
-			// 추가
 			res.sendRedirect("./list");
 			
 		} catch (Exception e) {

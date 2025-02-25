@@ -29,7 +29,6 @@ public class MemberUpdateServlet extends HttpServlet{
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
-
 		String mNo = "";
 		
 		String sql = "";

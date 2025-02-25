@@ -21,7 +21,6 @@ public class MemberDeleteServlet extends HttpServlet {
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
-
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
