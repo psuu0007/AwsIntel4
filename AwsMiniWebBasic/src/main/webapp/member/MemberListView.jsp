@@ -30,10 +30,10 @@
 	%>
 	
 	<%=memberDto.getNo()%>,
-	<a href="./update?<%=memberDto.getNo()%>"><%=memberDto.getName()%></a>,
+	<a href="./update?no=<%=memberDto.getNo()%>"><%=memberDto.getName()%></a>,
 	<%=memberDto.getEmail()%>,
 	<%=memberDto.getCreatedDate()%>,
-	<a href="./delete?<%=memberDto.getNo()%>">[삭제]</a>
+	<a href="./delete?no=<%=memberDto.getNo()%>">[삭제]</a>
 	<br>
 	<%
 		}

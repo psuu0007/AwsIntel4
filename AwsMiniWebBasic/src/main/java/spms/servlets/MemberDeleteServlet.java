@@ -24,11 +24,11 @@ public class MemberDeleteServlet extends HttpServlet {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
-		int mNo = Integer.parseInt(req.getParameter("no"));
-
 		String sql = "";
 
 		try {
+			int mNo = Integer.parseInt(req.getParameter("no"));
+			
 			ServletContext sc = this.getServletContext();
 			
 			conn = (Connection) sc.getAttribute("conn");
