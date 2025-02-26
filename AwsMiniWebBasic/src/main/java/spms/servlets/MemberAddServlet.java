@@ -2,8 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -12,6 +10,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import spms.dao.MemberDao;
+import spms.dto.MemberDto;
 
 @WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet{
@@ -31,28 +31,35 @@ public class MemberAddServlet extends HttpServlet{
 		System.out.println("doPost 수행함");
 		
 		Connection conn = null;
-		PreparedStatement pstmt = null;
 		
 		String emailStr = req.getParameter("email");
 		String pwdStr = req.getParameter("password");
-		String nameStr = req.getParameter("mname");
+		String nameStr = req.getParameter("name");
+		
+		MemberDto memberDto = new MemberDto();
+		
+		memberDto.setEmail(emailStr);
+		memberDto.setPassword(pwdStr);
+		memberDto.setName(nameStr);
 		
 		try {
 			ServletContext sc = this.getServletContext();
 			
 			conn = (Connection)sc.getAttribute("conn");
+
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
 			
-			String sql = "INSERT INTO MEMBERS"
-					+ "(MNO, EMAIL, PWD, MNAME, CRE_DATE, MOD_DATE)"
-					+ "VALUES(MEMBERS_MNO_SEQ.NEXTVAL, ?, ?, ?, SYSDATE, SYSDATE)";
+			int result = 0;
 			
-			pstmt = conn.prepareStatement(sql);
+//			0이면 SQL 실패, 0이외에는 성공
+			result = memberDao.memberInsert(memberDto);
 			
-			pstmt.setString(1, emailStr);
-			pstmt.setString(2, pwdStr);
-			pstmt.setString(3, nameStr);
-			
-			pstmt.executeUpdate();
+			System.out.println("???????: " + result);
+			if(result == 0) {
+				
+				System.out.println("회원가입 실패");
+			}
 			
 			res.sendRedirect("./list");
 			
@@ -63,17 +70,7 @@ public class MemberAddServlet extends HttpServlet{
 			req.setAttribute("error", e);
 			RequestDispatcher dispatcher = req.getRequestDispatcher("/Error.jsp");
 			dispatcher.forward(req, res);
-		}finally {
-			if(pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
-		} // finally 종료
+		}
 		
 	}
 	

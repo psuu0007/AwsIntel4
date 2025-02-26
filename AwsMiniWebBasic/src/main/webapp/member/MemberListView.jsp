@@ -1,7 +1,9 @@
+<%-- <%@page import="spms.dto.MemberDto"%> --%>
+<%-- <%@page import="java.util.ArrayList"%> --%>
 <%@page import="spms.dto.MemberDto"%>
-<%@page import="java.util.ArrayList"%>
 <%@ page language='java' contentType='text/html; charset=UTF-8'
 	pageEncoding='UTF-8'%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,25 +21,16 @@
 		<a href="./add">신규 회원</a>
 	</p>
 
-	<jsp:useBean id="memberList"
-		scope="request"
-		class="java.util.ArrayList"	
-		type="java.util.ArrayList<MemberDto>"
-	/>
+	<c:forEach var="memberDto" items="${memberList}">
 	
-	<%
-		for(MemberDto memberDto : memberList){
-	%>
+		${memberDto.getNo()},
+		<a href="./update?no=${memberDto.getNo()}">${memberDto.getName()}</a>,
+		${memberDto.getEmail()},
+		${memberDto.getCreatedDate()}
+		<a href="./delete?no=${memberDto.getNo()}">[삭제]</a><br>
 	
-	<%=memberDto.getNo()%>,
-	<a href="./update?no=<%=memberDto.getNo()%>"><%=memberDto.getName()%></a>,
-	<%=memberDto.getEmail()%>,
-	<%=memberDto.getCreatedDate()%>,
-	<a href="./delete?no=<%=memberDto.getNo()%>">[삭제]</a>
-	<br>
-	<%
-		}
-	%>
+	</c:forEach>
+   
 	
 	<jsp:include page="/Tail.jsp"/>
 
