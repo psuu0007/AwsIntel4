@@ -2,7 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import jakarta.servlet.RequestDispatcher;
@@ -12,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import spms.dao.MemberDao;
 
 @WebServlet(value = "/member/delete")
 public class MemberDeleteServlet extends HttpServlet {
@@ -22,25 +22,22 @@ public class MemberDeleteServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		Connection conn = null;
-		PreparedStatement pstmt = null;
 
-		String sql = "";
+		int no = Integer.parseInt(req.getParameter("no"));
 
 		try {
-			int mNo = Integer.parseInt(req.getParameter("no"));
-			
 			ServletContext sc = this.getServletContext();
-			
+
 			conn = (Connection) sc.getAttribute("conn");
 
-			sql = "DELETE FROM MEMBERS";
-			sql += " WHERE MNO = ?";
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
 
-			pstmt = conn.prepareStatement(sql);
+			int result = memberDao.memberDelete(no);
 
-			pstmt.setInt(1, mNo);
-
-			pstmt.executeUpdate();
+			if (result == 0) {
+				System.out.println("회원 삭제가 정상처리 되지 않았습니다");
+			}
 
 			res.sendRedirect("./list");
 			
@@ -51,18 +48,7 @@ public class MemberDeleteServlet extends HttpServlet {
 			req.setAttribute("error", e);
 			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
 			rd.forward(req, res);
-		} finally {
-
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		} // finally 종료
+		}
 
 	}
 

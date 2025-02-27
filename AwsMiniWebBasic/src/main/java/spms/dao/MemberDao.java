@@ -119,6 +119,212 @@ public class MemberDao {
 		return result;
 	}
 	
+	// 회원삭제
+	public int memberDelete(int no) throws SQLException {
+		int result = 0;
+
+		PreparedStatement pstmt = null;
+
+		String sql = "";
+		sql = "DELETE FROM MEMBERS";
+		sql += " WHERE MNO = ?";
+
+		try {
+			pstmt = connection.prepareStatement(sql);
+
+			pstmt.setInt(1, no);
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw e;
+		} finally {
+
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} // finally 종료
+
+		return result;
+	}
+	
+	
+	// 회원 상세 정보 조회
+	public MemberDto memberSelectOne(int no) throws Exception {
+
+		MemberDto memberDto = null;
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String sql = "";
+
+		sql = "SELECT MNO, EMAIL, MNAME, CRE_DATE";
+		sql += " FROM MEMBERS";
+		sql += " WHERE MNO =?";
+
+		try {
+			pstmt = connection.prepareStatement(sql);
+
+			pstmt.setInt(1, no);
+
+			rs = pstmt.executeQuery();
+
+			String mName = "";
+			String email = "";
+			Date creDate = null;
+
+			if (rs.next()) {
+				mName = rs.getString("MNAME");
+				email = rs.getString("EMAIL");
+				creDate = rs.getDate("CRE_DATE");
+
+				memberDto = new MemberDto();
+
+				memberDto.setNo(no);
+				memberDto.setName(mName);
+				memberDto.setEmail(email);
+				memberDto.setCreatedDate(creDate);
+			} else {
+				throw new Exception("해당 번호의 회원을 찾을 수 없습니다.");
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} // finally 종료
+		return memberDto;
+	}
+	
+	// 회원 정보 변경
+	public int memberUpdate(MemberDto memberDto) throws SQLException {
+		int result = 0;
+
+		PreparedStatement pstmt = null;
+
+		String sql = "";
+		sql = "UPDATE MEMBERS";
+		sql += " SET EMAIL=?, MNAME=?, MOD_DATE=SYSDATE";
+		sql += " WHERE MNO =?";
+
+		try {
+			pstmt = connection.prepareStatement(sql);
+
+			pstmt.setString(1, memberDto.getEmail());
+			pstmt.setString(2, memberDto.getName());
+			pstmt.setInt(3, memberDto.getNo());
+
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} // finally 종료
+		return result;
+	}
+	
+	// 사용자 존재 유무 없으면 null 리턴
+	public MemberDto memberExist(String email, String pwd)
+		throws SQLException {
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String sql = "";
+		sql += "SELECT MNAME, EMAIL";
+		sql += " FROM MEMBERS";
+		sql += " WHERE EMAIL = ? AND PWD = ?";
+
+		String name = "";
+
+		try {
+			pstmt = connection.prepareStatement(sql);
+			// db는 컬럼을 1부터 시작
+			int colIndex = 1;
+			pstmt.setString(colIndex++, email);
+			pstmt.setString(colIndex, pwd);
+
+			rs = pstmt.executeQuery();
+			
+			MemberDto memberDto = new MemberDto();
+			if (rs.next()) {
+				email = rs.getString("email");
+				name = rs.getString("mname");
+
+				memberDto.setEmail(email);
+				memberDto.setName(name);
+				
+				// 회원 정보 조회 확인
+				return memberDto;
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} // finally 종료
+
+		// 회원이 조회가 안된다면
+		return null;
+	}
+	
 }
 
 

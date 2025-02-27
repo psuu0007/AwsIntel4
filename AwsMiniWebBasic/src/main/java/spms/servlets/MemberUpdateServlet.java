@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import spms.dao.MemberDao;
 import spms.dto.MemberDto;
 
 @SuppressWarnings("serial")
@@ -26,48 +27,24 @@ public class MemberUpdateServlet extends HttpServlet{
 		// TODO Auto-generated method stub
 		
 		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+		RequestDispatcher rd = null;
 
 		String mNo = "";
-		
-		String sql = "";
-		RequestDispatcher rd = null;
 		
 		try {
 			mNo = req.getParameter("no");
 			int no = Integer.parseInt(mNo);
-			
+
 			ServletContext sc = this.getServletContext();
-			
+
 			conn = (Connection) sc.getAttribute("conn");
-
-			sql = "SELECT MNO, EMAIL, MNAME, CRE_DATE";
-			sql += " FROM MEMBERS";
-			sql += " WHERE MNO =?";
-
-			pstmt = conn.prepareStatement(sql);
-
-			pstmt.setInt(1, no);
 			
-			rs = pstmt.executeQuery();
-
-			String mName = "";
-			String email = "";
-			Date creDate = null;
-
-			MemberDto memberDto = new MemberDto(); 
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
 			
-			if (rs.next()) {
-				mName = rs.getString("MNAME");
-				email = rs.getString("EMAIL");
-				creDate = rs.getDate("CRE_DATE");
-				
-				memberDto.setNo(no);
-				memberDto.setName(mName);
-				memberDto.setEmail(email);
-				memberDto.setCreatedDate(creDate);
-			}else{
+			MemberDto memberDto = memberDao.memberSelectOne(no);
+			
+			if (memberDto == null) {
 				throw new Exception("해당 번호의 회원을 찾을 수 없습니다.");
 			}
 			
@@ -82,26 +59,7 @@ public class MemberUpdateServlet extends HttpServlet{
 			req.setAttribute("error", e);
 			rd = req.getRequestDispatcher("/Error.jsp");
 			rd.forward(req, res);
-		}finally {
-			if(rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
-			if(pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
-		} // finally
+		}
 		
 	}
 	
@@ -109,32 +67,34 @@ public class MemberUpdateServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse res)
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		MemberDto memberDto = null;
+		
 		Connection conn = null;
-		PreparedStatement pstmt = null;
-
-		String email = req.getParameter("email");
-		String name = req.getParameter("name");
-		String no = req.getParameter("mNo");
-		int mNo = Integer.parseInt(no);
-
-		String sql = "";
-
+		
 		try {
+			
+			String email = req.getParameter("email");
+			String name = req.getParameter("name");
+			String mNo = req.getParameter("mNo");
+			int no = Integer.parseInt(mNo);
+			
+			memberDto = new MemberDto();
+			memberDto.setEmail(email);
+			memberDto.setName(name);
+			memberDto.setNo(no);
+			
 			ServletContext sc = this.getServletContext();
 
 			conn = (Connection) sc.getAttribute("conn");
 
-			sql = "UPDATE MEMBERS";
-			sql += " SET EMAIL=?, MNAME=?, MOD_DATE=SYSDATE";
-			sql += " WHERE MNO =?";
-
-			pstmt = conn.prepareStatement(sql);
-
-			pstmt.setString(1, email);
-			pstmt.setString(2, name);
-			pstmt.setInt(3, mNo);
+			MemberDao memberDao = new MemberDao();
+			memberDao.setConnection(conn);
 			
-			pstmt.executeUpdate();
+			int result = memberDao.memberUpdate(memberDto);
+
+			if(result == 0){
+				System.out.println("회원 정보 조회가 실패하였습니다.");
+			}
 			
 			res.sendRedirect("./list");
 			
@@ -145,18 +105,7 @@ public class MemberUpdateServlet extends HttpServlet{
 			req.setAttribute("error", e);
 			RequestDispatcher rd = req.getRequestDispatcher("/Error.jsp");
 			rd.forward(req, res);
-		}finally {
-			
-			if(pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			
-		} // finally
+		}
 		
 	}
 	
