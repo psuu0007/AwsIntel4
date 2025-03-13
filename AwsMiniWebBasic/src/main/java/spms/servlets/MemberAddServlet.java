@@ -20,7 +20,7 @@ public class MemberAddServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 		throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		res.sendRedirect("../member/MemberForm.jsp");
+		res.sendRedirect("./MemberForm.jsp");
 			
 	}
 	
