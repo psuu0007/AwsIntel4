@@ -5,6 +5,12 @@
 <head>
 <title>회원 등록</title>
 
+<script type="text/javascript">
+function pageMoveListFnc() {
+	location.href = './list';
+}
+</script>
+
 </head>
 
 <body>
@@ -18,6 +24,7 @@
 		
 		<input type='submit' value='추가'>
 		<input type='reset' value='취소'>
+		<input type="button" value="회원 목록으로 이동" onclick="pageMoveListFnc();">
 	</form>
 	
 	<jsp:include page="/WEB-INF/views/Tail.jsp" />

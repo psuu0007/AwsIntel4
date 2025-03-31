@@ -37,6 +37,27 @@
 			#{password}, SYSDATE, SYSDATE)
 	</insert>
 	
+	<select id="memberSelectOne" parameterType="int" 
+		resultMap="memberResultMap">
+		SELECT MEMBER_NO, MEMBER_NAME, EMAIL, CRE_DATE
+		FROM MEMBER
+		WHERE MEMBER_NO = #{no}
+	</select>
+	
+	<update id="memberUpdateOne" parameterType="memberVo">
+		UPDATE MEMBER
+		<set>
+			<if test="email != ''">EMAIL = #{email},</if>
+			<if test="memberName != ''">MEMBER_NAME = #{memberName},</if>
+			MOD_DATE = SYSDATE
+		</set>
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
+	<delete id="memberDeleteOne" parameterType="int">
+		DELETE 	FROM MEMBER 
+		WHERE 	MEMBER_NO = #{value}
+	</delete>
 	
 </mapper>
 

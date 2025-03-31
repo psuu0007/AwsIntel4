@@ -14,7 +14,7 @@
 	Hello Spring Projects..
 	
 	<div>
-		<a href="./member/getMemberList">
+		<a href="./member/login">
 			회원 목록 이동
 		</a>
 	</div>

@@ -10,7 +10,7 @@
 		<span style="float:right;">
 			${member.memberName}
 			<a style="color:white;" 
-				href="<%=request.getContextPath()%>/member/logout">로그아웃</a>
+				href='<c:url value="/member/logout"/>'>로그아웃</a>
 		</span>
 	</c:if>
 

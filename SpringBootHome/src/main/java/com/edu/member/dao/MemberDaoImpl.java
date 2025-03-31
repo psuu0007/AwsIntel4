@@ -15,11 +15,13 @@ public class MemberDaoImpl implements MemberDao{
 	@Autowired
 	private SqlSession sqlSession;
 	
+	private String namespace = "com.edu.member.";
+	
 	@Override
 	public List<MemberVo> memberSelectList() {
 		// TODO Auto-generated method stub
 		
-		return sqlSession.selectList("com.edu.member.memberSelectList");
+		return sqlSession.selectList(namespace + "memberSelectList");
 	}
 
 	@Override
@@ -30,14 +32,31 @@ public class MemberDaoImpl implements MemberDao{
 		paramMap.put("email", email);
 		paramMap.put("pwd", password);
 		
-		return sqlSession.selectOne("com.edu.member.memberExist", paramMap);
+		return sqlSession.selectOne(namespace + "memberExist", paramMap);
 	}
 
 	@Override
 	public int memberInsertOne(MemberVo memberVo) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert("com.edu.member.memberInsertOne"
+		return sqlSession.insert(namespace + "memberInsertOne"
 			, memberVo);
 	}
 
+	@Override
+	public MemberVo memberSelectOne(int memberNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + "memberSelectOne", memberNo);
+	}
+
+	@Override
+	public int memberUpdateOne(MemberVo memberVo) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(namespace + "memberUpdateOne", memberVo);
+	}
+
+	@Override
+	public int memberDeleteOne(int no) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(namespace + "memberDeleteOne", no);
+	}
 }
