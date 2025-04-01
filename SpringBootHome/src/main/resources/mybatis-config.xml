@@ -6,9 +6,11 @@
 <configuration>
   <typeAliases>
   	<package name="com.edu.member.domain"/>
+  	<package name="com.edu.freeBoard.domain"/>
   </typeAliases>
   
   <mappers>
     <mapper resource="mappers/member/MemberMapper.xml"/>
+    <mapper resource="mappers/member/FreeBoardMapper.xml"/>
   </mappers>
 </configuration>

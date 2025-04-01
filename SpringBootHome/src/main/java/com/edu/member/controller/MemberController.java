@@ -1,5 +1,6 @@
 package com.edu.member.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -30,13 +31,6 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
-	
-	//바로 지울거임
-	@GetMapping("/test")
-	public String test(Model model) {
-		
-		return "member/test";
-	}
 	
 	@GetMapping("/login")
 	public String login(Model model) {
@@ -145,7 +139,8 @@ public class MemberController {
 	}
 	
 	@DeleteMapping("/delete/{memberNo}")
-	public ResponseEntity<String> memberDelete(@PathVariable("memberNo") int memberNo) {
+	public ResponseEntity<String> memberDelete(
+		@PathVariable("memberNo") int memberNo) {
 		logger.info(logTitleMsg);
 		logger.info("@DeleteMapping memberDelete: {}", memberNo);
 

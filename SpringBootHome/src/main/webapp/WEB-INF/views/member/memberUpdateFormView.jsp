@@ -28,9 +28,11 @@ function pageMoveMemberDeleteFnc(memberId) {
 		}else{
 			throw new Error('회원삭제 실패 했네');
 		}
-	}).then(function(data) {
+	}).then(function(data) {//실제 화면을 재구성할 수 있는 함수 영역
 		alert(data);
 		
+// 		document.getElementById('demo').innerHTML = data;
+	
 		location.href = './list';
 	}).catch(function(error){
 		alert(error.message || '회원삭제 시 통신에 문제 발생');
@@ -70,7 +72,7 @@ function pageMoveMemberDeleteFnc(memberId) {
 		</div>
 		<div>
 			<input type="submit" value="저장">
-			 <input type='button' value='삭제' 
+			<input type='button' value='삭제' 
             	onclick='pageMoveMemberDeleteFnc(${memberVo.memberNo});'>
 			<input type="button" value="회원목록으로 이동" 
 				onclick="pageMoveListFnc();">
