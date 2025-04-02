@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,14 +29,13 @@ public class FreeBoardController {
 	@Autowired
 	private FreeBoardService freeBoardService;
 	
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView freeBoardList() {
+	@RequestMapping(value = "/list", method = {RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView freeBoardList(@RequestParam(defaultValue = "1") int curPage) {
 		logger.info(logTitleMsg);
-		logger.info("RequestMethod.GET freeBoardList");
+		logger.info("RequestMethod.GET freeBoardList/ curPage: {}", curPage);
 		
 		int totalCount = freeBoardService.freeBoardSelectTotalCount();
 		
-		int curPage = 1;
 		Paging pagingVo = new Paging(totalCount, curPage);
 		
 		int start = pagingVo.getPageBegin();

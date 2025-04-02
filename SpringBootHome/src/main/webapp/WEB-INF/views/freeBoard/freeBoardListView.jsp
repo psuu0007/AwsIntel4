@@ -8,7 +8,25 @@
 <meta charset="UTF-8">
 <title>자유게시판 목록</title>
 
+<style type="text/css">
+table, th, tr, td{
+	border: 1px solid black;
+	border-collapse: collapse;	
+}
 
+tr > th{
+	background: gray;
+}
+
+.aTagStyle{
+	cursor: pointer;
+}
+
+.aTagStyle:hover {
+	color: lightgreen;
+	background: gray;
+}
+</style>
 
 </head>
 <body>
@@ -56,6 +74,11 @@
 	</jsp:include>
 		
 	<jsp:include page="/WEB-INF/views/Tail.jsp"/>
+	
+	<form action="./list" id="pagingForm" method="post">
+		<input type="hidden" id="curPage" name="curPage"
+		   value="${pagingMap.pagingVo.curPage}">
+	</form>
 
 </body>
 </html>

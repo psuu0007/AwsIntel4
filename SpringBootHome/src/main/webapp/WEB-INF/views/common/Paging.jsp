@@ -3,6 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+<script type="text/javascript" 
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <style type="text/css">
 nav > ul {
 	list-style-type: none;
@@ -33,13 +36,47 @@ nav > ul > li > a:hover {
     background-color: #5D5D5D;
     font-weight: bold;
 }
+
+.active{
+	color: #FFD9EC;
+    background-color: #5D5D5D;
+    font-weight: bold;
+}
 </style>
+
+<script type="text/javascript">
+// 	function goPage(pageNumber) {
+// 		var curPage = document.getElementById('curPage');
+		
+// 		curPage.value = pageNumber;
+		
+// 		var pagingFormObj = document.getElementById('pagingForm');
+// 		pagingFormObj.submit();
+// 	}
+
+	function goPage(pageNumber) {
+		var curPage = $("#curPage");
+		curPage.val(pageNumber);
+		
+		alert('???');
+		
+		$("#pagingForm").submit();
+	}
+	
+	window.onload = function() {
+		var curPageDoc = document.getElementById('curPage');
+		var id = 'pageButton' + curPageDoc.value;
+		
+		var pageButtonTag = document.getElementById(id);
+		pageButtonTag.className = 'active';
+	}
+</script>
 
 	<nav>
 		<ul>
 		<c:if test="${pagingMap.pagingVo.prevBlock ne 1}">
 			<li>
-				<a href="#">
+				<a href="#" onclick="goPage(${pagingMap.pagingVo.prevBlock});">
 					<span>≪</span>
 				</a>
 			</li>
@@ -47,8 +84,8 @@ nav > ul > li > a:hover {
 			
 		<c:forEach var="num" begin="${pagingMap.pagingVo.blockBegin}" 
 			end="${pagingMap.pagingVo.blockEnd}">
-			<li>
-				<a href="#">
+			<li id="pageButton${num}">
+				<a href="#" onclick="goPage(${num});">
 					<c:out value="${num}"/>
 				</a>
 			</li>
@@ -56,7 +93,7 @@ nav > ul > li > a:hover {
 			
 		<c:if test="${pagingMap.pagingVo.curBlock < pagingMap.pagingVo.totBlock}">
 			<li>
-				<a href="#">
+				<a href="#" onclick="goPage(${pagingMap.pagingVo.nextBlock});">
 					<span>≫</span>
 				</a>
 			</li>			
