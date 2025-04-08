@@ -44,11 +44,18 @@
 		FROM FREE_BOARD
 	</select>
 	
-	<insert id="freeBoardInsertOne" parameterType="com.edu.freeBoard.domain.FreeBoardVo">
+	<insert id="freeBoardInsertOne" 
+		parameterType="com.edu.freeBoard.domain.FreeBoardVo"
+		useGeneratedKeys="true" keyProperty="freeBoardId">
+		<selectKey keyProperty="freeBoardId" resultType="int" order="BEFORE">
+			SELECT FREE_BOARD_ID_SEQ.NEXTVAL
+			FROM DUAL
+		</selectKey>
+		
 		INSERT INTO FREE_BOARD
 		VALUE(FREE_BOARD_ID, MEMBER_NO, FREE_BOARD_TITLE, FREE_BOARD_CONTENT
 			, CREATE_DATE, UPDATE_DATE)
-		VALUES(FREE_BOARD_ID_SEQ.NEXTVAL, #{memberNo}, #{freeBoardTitle}
+		VALUES(#{freeBoardId}, #{memberNo}, #{freeBoardTitle}
 			, #{freeBoardContent}, SYSDATE, SYSDATE)
 	</insert>
 	
@@ -77,7 +84,11 @@
 	</update>
 	
 	<insert id="freeBoardFileInsertOne" parameterType="map">
-	
+		INSERT INTO FREE_BOARD_FILE
+		(FREE_BOARD_FILE_ID, FREE_BOARD_ID, ORIGINAL_FILE_NAME, STORED_FILE_NAME
+			, FREE_BOARD_FILE_SIZE, CREATE_DATE, UPDATE_DATE)
+		VALUES(FREE_BOARD_FILE_ID_SEQ.NEXTVAL, #{parentId}, #{originalFileName}
+			, #{storedFileName}, #{fileSize}, SYSDATE, SYSDATE)
 	</insert>
 	
 </mapper>

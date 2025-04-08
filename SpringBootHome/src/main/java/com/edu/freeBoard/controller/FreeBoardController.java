@@ -72,12 +72,18 @@ public class FreeBoardController {
 		logger.info(logTitleMsg);
 		logger.info("@PostMapping freeBoardInsertCtr freeBoardVo: {}", freeBoardVo);
 		
-		freeBoardService.freeBoardInsertOne(freeBoardVo, mhr);
+		try {
+			freeBoardService.freeBoardInsertOne(freeBoardVo, mhr);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.info("자유게시판 추가에서 문제 발생");
+			e.printStackTrace();
+		}
 		
-		Map<String, String> jsonMap = new HashMap<>();
-		jsonMap.put("result", "success");
+		Map<String, String> resultMap = new HashMap<>();
+		resultMap.put("result", "success");
 		
-		return ResponseEntity.ok(jsonMap);
+		return ResponseEntity.ok(resultMap);
 	}
 	
 	// 게시판 수정 화면 생성
