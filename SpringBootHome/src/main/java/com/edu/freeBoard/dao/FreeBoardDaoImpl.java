@@ -33,4 +33,28 @@ public class FreeBoardDaoImpl implements FreeBoardDao{
 		return sqlSession.selectOne(namespace + "freeBoardSelectTotalCount");
 	}
 
+	@Override
+	public void freeBoardInsertOne(FreeBoardVo freeBoardVo) {
+		// TODO Auto-generated method stub
+		sqlSession.insert(namespace + "freeBoardInsertOne", freeBoardVo);
+	}
+
+	@Override
+	public FreeBoardVo freeBoardSelectOne(int freeBoardId) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + "freeBoardSelectOne", freeBoardId);
+	}
+
+	@Override
+	public void freeBoardUpdateOne(FreeBoardVo freeBoardVo) {
+		// TODO Auto-generated method stub
+		sqlSession.update(namespace + "freeBoardUpdateOne", freeBoardVo);
+	}
+
+	@Override
+	public void freeBoardFileInsertOne(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		sqlSession.insert(namespace + "freeBoardFileInsertOne", map);
+	}
+
 }

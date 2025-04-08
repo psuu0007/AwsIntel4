@@ -84,6 +84,7 @@ function pageMoveMemberDetailFnc(tableTdTag) {
 	
 	<jsp:include page="/WEB-INF/views/Tail.jsp"/>
 	
+	
 	<form id='memberSelectOneForm' action="./detail" method="get">
 		<input id='memberNo' type="hidden" name="memberNo" value="">
 	</form>

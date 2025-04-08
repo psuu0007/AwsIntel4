@@ -22,11 +22,15 @@
 	</span>
 	
 	<c:if test="${sessionScope.member.email ne null}">
-		<span style="float:right;">
-			${member.memberName}
-			<a style="color:white;" 
-				href='<c:url value="/member/logout"/>'>로그아웃</a>
-		</span>
+	
+	<span style="float:right;">
+		${member.memberName}
+		
+		<input type="hidden" id="inputMemberNo" value="${member.memberNo}">
+		<a style="color:white;" 
+			href='<c:url value="/member/logout"/>'>로그아웃</a>
+	</span>
+	
 	</c:if>
 
 </div>

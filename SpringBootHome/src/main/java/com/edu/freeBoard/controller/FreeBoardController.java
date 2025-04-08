@@ -7,10 +7,20 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.edu.freeBoard.domain.FreeBoardVo;
@@ -55,4 +65,55 @@ public class FreeBoardController {
 		return mav;
 	}
 	
+	@PostMapping("/")
+	public ResponseEntity<Map<String, String>> 
+		freeBoardInsertCtr(@ModelAttribute FreeBoardVo freeBoardVo,
+			MultipartHttpServletRequest mhr){
+		logger.info(logTitleMsg);
+		logger.info("@PostMapping freeBoardInsertCtr freeBoardVo: {}", freeBoardVo);
+		
+		freeBoardService.freeBoardInsertOne(freeBoardVo, mhr);
+		
+		Map<String, String> jsonMap = new HashMap<>();
+		jsonMap.put("result", "success");
+		
+		return ResponseEntity.ok(jsonMap);
+	}
+	
+	// 게시판 수정 화면 생성
+	@GetMapping("/{freeBoardId}")
+	public ResponseEntity<FreeBoardVo> 
+		freeBoardUpdate(@PathVariable int freeBoardId){
+		logger.info(logTitleMsg);
+		logger.info("@GetMapping freeBoardUpdate freeBoardId: {}", freeBoardId);
+		
+		FreeBoardVo freeBoardVo = freeBoardService.freeBoardSelectOne(freeBoardId);
+		
+		return ResponseEntity.ok(freeBoardVo);
+	}
+	
+	// 게시판 수정 db
+	@PatchMapping("/{freeBoardId}")
+	public ResponseEntity<?> 
+		freeBoardUpdateCtr(@PathVariable int freeBoardId, 
+			@RequestBody FreeBoardVo freeBoardVo){
+		logger.info(logTitleMsg);
+		logger.info("@PatchMapping freeBoardUpdateCtr "
+			+ "freeBoardId: {}, freeBoardVo: {}", freeBoardId, freeBoardVo);
+		
+		if(freeBoardVo.getMemberNo() == 0) {
+			Map<String, String> errorResponseMap = new HashMap<>();
+			errorResponseMap.put("errorMsg", "게시판 ID가 일치하지 않습니다.");
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.contentType(MediaType.APPLICATION_JSON).body(errorResponseMap);
+		}
+		
+		System.err.println("??있나? " + freeBoardVo.getMemberNo());
+		
+		freeBoardService.freeBoardUpdateOne(freeBoardVo);
+		freeBoardVo = freeBoardService.freeBoardSelectOne(freeBoardId);
+		
+		return ResponseEntity.ok(freeBoardVo);
+	}
 }
