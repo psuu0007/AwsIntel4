@@ -51,6 +51,40 @@ tr > th{
 </style>
 
 <script type="text/javascript">
+// 	db에 있는 파일들 화면 만들기
+	function storeFileListMakeUlFnc(freeBoardFileList) {
+		const storeFileListUl = $('#storeFileList');
+		
+		storeFileListUl.html('');
+		let listItem = null;
+		
+		if(freeBoardFileList.length == 0){
+			listItem = $('<li>저장된 파일이 없습니다.</li>');
+			
+			storeFileListUl.html(listItem);
+			return;
+		}
+		
+		var liHtmlStr = '';
+		for (var i = 0; i < freeBoardFileList.length; i++) {
+			listItem = document.createElement('li');
+			
+			liHtmlStr = freeBoardFileList[i].originalFileName
+				+ '&nbsp;&nbsp;'
+				+ freeBoardFileList[i].freeBoardFileSize + '(kb)'
+				+ '<img alt="image not found" src="/img/' 
+				+ freeBoardFileList[i].storedFileName
+				+ '" style="width: 150px;" />'
+				+ '<span>'
+				+ '<input type="button" value="수정">'
+				+ '<input type="button" value="삭제">'
+				+ '</span>';   
+				
+				listItem.innerHTML = liHtmlStr;
+				storeFileListUl.append(listItem);
+		}
+	} // storeFileListMakeUlFnc end
+
 	$(document).ready(function() {
 		
 		// 글쓰기 db저장하는 로직&화면
@@ -64,8 +98,11 @@ tr > th{
 			var freeBoardTitleTag = $('#freeBoardTitle');
 			var freeBoardContentTag = $('#freeBoardContent');
 			
+			// form태그 그 자체
 			var formDataObj = new FormData();
 			
+// 			input태그 설정			
+// 								name			value
 			formDataObj.append('freeBoardId', 0);
 			formDataObj.append('memberNo', inputMemberNoTag.val());
 			formDataObj.append('freeBoardTitle', freeBoardTitleTag.val());
@@ -182,9 +219,14 @@ htmlStr += '</div>';
 		$.ajax({
 			url: '/freeBoard/' + freeBoardIdStr,
 			method: 'GET',
+			dataType: 'json',
 			success: function (data) {
 // 				alert('데이터 가져와 졌나? ' + data.email);
-				let createDate = new Date(data.createDate).toLocaleString('ko-KR', {
+				
+				var freeBoardVo = data.freeBoardVo;
+				var freeBoardFileList = data.freeBoardFileList;
+
+				let createDate = new Date(freeBoardVo.createDate).toLocaleString('ko-KR', {
 					year: 'numeric',
 					month: '2-digit',
 					day: '2-digit',
@@ -201,21 +243,23 @@ htmlStr += '<tr>';
 htmlStr += '<td class="tableSubject">주제</td>';
 htmlStr += '<td style="width: 735px;" colspan="3">';
 htmlStr += '<input type="text" id="freeBoardTitle" name="freeBoardTitle"';
-htmlStr += ' value="' + data.freeBoardTitle + '" size="100px">';
+htmlStr += ' value="' + freeBoardVo.freeBoardTitle + '" size="100px">';
 htmlStr += '</td>';
 htmlStr += '</tr>';
+
 htmlStr += '<tr>';
 htmlStr += '<td class="tableSubject">작성자</td>';
-htmlStr += '<td class="tableValue">' + data.memberName + '</td>';
+htmlStr += '<td class="tableValue">' + freeBoardVo.memberName + '</td>';
 htmlStr += '<td class="tableSubject">게시판 번호</td>';
 htmlStr += '<td class="tableValue">';
 htmlStr += '<input type="text" id="freeBoardId" name="freeBoardId"';
-htmlStr += ' value="' + data.freeBoardId + '" readonly>';
+htmlStr += ' value="' + freeBoardVo.freeBoardId + '" readonly>';
 htmlStr += '</td>';
 htmlStr += '</tr>';
+
 htmlStr += '<tr>';
 htmlStr += '<td class="tableSubject">이메일</td>';
-htmlStr += '<td class="tableValue">' + data.email + '</td>';
+htmlStr += '<td class="tableValue">' + freeBoardVo.email + '</td>';
 htmlStr += '<td class="tableSubject">작성일자</td>';
 htmlStr += '<td class="tableValue">' + createDate + '</td>';
 htmlStr += '</tr>';
@@ -229,35 +273,55 @@ htmlStr += '</td>';
 htmlStr += '</tr>';
 htmlStr += '</table>';
 
+
+// 이미지 출력 영역
+htmlStr += '<div id="fileContainer" style="border: 1px solid black;">';
+htmlStr += '<label for="inputFreeBoardFile">파일</label>';
+htmlStr += '<input type="file" id="inputFreeBoardFile" name="freeBoardFileList" multiple>';
+htmlStr += '<ul id="fileList" class="fileUploadList"></ul>';
+htmlStr += '<ul id="storeFileList" class="fileUploadList"></ul>';
+htmlStr += '</div>';
+
 				var InputSessionMemberNoTag = $('#inputMemberNo');
+// 내가 만든거냐, 남이 만든거냐				
+if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 	htmlStr += '<div>';
 	htmlStr += '<span>';
 	htmlStr += '<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>';
 	htmlStr += '<button onclick="restRequestFreeBoardUpdateCtrFnc();">수정완료</button>';
 	htmlStr += '</span>';
-	htmlStr += '</div>';				
-				
-// if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
-// 	htmlStr += '<div>';
-// 	htmlStr += '<span>';
-// 	htmlStr += '<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>';
-// 	htmlStr += '<button onclick="restRequestFreeBoardUpdateCtrFnc();">수정완료</button>';
-// 	htmlStr += '</span>';
-// 	htmlStr += '</div>';
-// }else{
-// 	htmlStr += '<div>';
-// 	htmlStr += '<span>';
-// 	htmlStr += '<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>';
-// 	htmlStr += '</span>';
-// 	htmlStr += '</div>';
-// }
+	htmlStr += '</div>';
+}else{
+	htmlStr += '<div>';
+	htmlStr += '<span>';
+	htmlStr += '<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>';
+	htmlStr += '</span>';
+	htmlStr += '</div>';
+}
 				
 				containerTag.html(htmlStr);
 				
 				let freeBoardContentTag = $('#freeBoardContent');
-// 				alert("freeBoardContentTag: " + freeBoardContentTag);
 				
-				freeBoardContentTag.text(data.freeBoardContent);
+				freeBoardContentTag.text(freeBoardVo.freeBoardContent);
+				
+				storeFileListMakeUlFnc(freeBoardFileList);
+				
+				const inputFreeBoardFile = 
+					document.getElementById('inputFreeBoardFile');
+				const fileListUl = document.getElementById('fileList');
+				
+				inputFreeBoardFile.addEventListener('change', function() {
+					fileListUl.innerHTML = '';
+					for (var i = 0; i < inputFreeBoardFile.files.length; i++) {
+						let listItem = document.createElement('li');
+						listItem.innerHTML = inputFreeBoardFile.files[i].name
+						+ '&nbsp;&nbsp;' + inputFreeBoardFile.files[i].size 
+						+ '(byte)';
+						
+						fileListUl.appendChild(listItem);
+					}
+				});
 			}, // success end
 			error: function(xhr, status) {
 				alert(xhr.status + " / " + status);
@@ -272,25 +336,44 @@ htmlStr += '</table>';
 		var freeBoardTitleTag = $('#freeBoardTitle');
 		var freeBoardContentTag = $('#freeBoardContent');
 		
-		var jsonDataObj = {
-			freeBoardId: freeBoardIdTag.val(),
-			memberNo: inputMemberNoTag.val(),
-			freeBoardTitle: freeBoardTitleTag.val(),
-			freeBoardContent: freeBoardContentTag.val(),
-			createDate: null,
-			updateDate: null
-		};
+		
+		var formDataObj = new FormData();
+		
+		formDataObj.append('freeBoardId', 0);
+		formDataObj.append('memberNo', inputMemberNoTag.val());
+		formDataObj.append('freeBoardTitle', freeBoardTitleTag.val());
+		formDataObj.append('freeBoardContent', freeBoardContentTag.val());
+		
+		var storeFileListUl = $('#storeFileList');
+		console.log(storeFileListUl);
+		
+// 		수정완료 페이지에서 삭제할 파일 처리
+		storeFileListUl.find('span[delfileid]').each(function(index, item) {
+			formDataObj.append('delFreeBoardFileIdList'
+				, $(item).attr('delfileid'));
+		});
+		
+		const inputFreeBoardFileArr = $('#inputFreeBoardFile')[0].files;
+		
+		if(inputFreeBoardFileArr.length > 0){
+			for (let i = 0; i < inputFreeBoardFileArr.length; i++) {
+				formDataObj.append('inputFreeBoardFileArr' + i
+					, inputFreeBoardFileArr[i]);
+			}
+		}
 		
 		$.ajax({
-			url: '/freeBoard/' + jsonDataObj.freeBoardId,
+			url: '/freeBoard/' + freeBoardIdTag.val(),
 			method: 'PATCH',
-			contentType: "application/json",
-			data: JSON.stringify(jsonDataObj),
-			dataType: "json",
-			success: function (data) {
-// 				alert('ajax 성공함: ' + data.freeBoardId);
+			processData: false,
+			contentType: false,
+			data: formDataObj,
+			success: function (resultMap) {
+
+				var freeBoardVo = resultMap.freeBoardVo;
+				var freeBoardFileList = resultMap.freeBoardFileList;
 				
-				let createDate = new Date(data.createDate).toLocaleString('ko-KR', {
+				let createDate = new Date(freeBoardVo.createDate).toLocaleString('ko-KR', {
 					year: 'numeric',
 					month: '2-digit',
 					day: '2-digit',
@@ -308,21 +391,21 @@ htmlStr += '</table>';
 			<td class="tableSubject">주제</td>
 			<td style="width: 735px;" colspan="3">
 				<input type="text" id="freeBoardTitle" name="freeBoardTitle" 
-					value="\${data.freeBoardTitle}">
+					value="\${freeBoardVo.freeBoardTitle}">
 			</td>
 		</tr>
 		<tr>
 			<td class="tableSubject">작성자</td>
-			<td class="tableValue">\${data.memberName}</td>
+			<td class="tableValue">\${freeBoardVo.memberName}</td>
 			<td class="tableSubject">게시판 번호</td>
 			<td class="tableValue">
 				<input type="text" id="freeBoardId" name="freeBoardId"
-					value="\${data.freeBoardId}" readonly>
+					value="\${freeBoardVo.freeBoardId}" readonly>
 			</td>
 		</tr>
 		<tr>
 			<td class="tableSubject">이메일</td>
-			<td class="tableValue">\${data.email}</td>
+			<td class="tableValue">\${freeBoardVo.email}</td>
 			<td class="tableSubject">작성일자</td>
 			<td class="tableValue">\${createDate}</td>
 		</tr>
@@ -334,10 +417,21 @@ htmlStr += '</table>';
 			</td>
 		</tr>	
 	</table>
+	
+// 	수정페이지에서 파일 관리 화면
+	<div id="fileContainer" style="border: 1px solid black;">
+		<label for="inputFreeBoardFile">파일</label>
+		<input type="file" id="inputFreeBoardFile" name="freeBoardFileList" 
+			multiple>
+		<ul id="fileList" class="fileUploadList"></ul>
+		<ul id="storeFileList" class="fileUploadList"></ul>
+	</div>
+	
 	<div>
 		<span>
 			<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>
 			<button onclick="restRequestFreeBoardUpdateCtrFnc();">수정 완료</button>
+			<input type="button" value="삭제하기" onclick="alert('미완성');">
 		</span>
 	</div>
 				`;
@@ -345,8 +439,9 @@ htmlStr += '</table>';
 				containerTag.html(htmlStr);
 				
 				let freeBoardContentTag = $('#freeBoardContent');
-				freeBoardContentTag.text(data.freeBoardContent);
+				freeBoardContentTag.text(freeBoardVo.freeBoardContent);
 				
+				storeFileListMakeUlFnc(freeBoardFileList);
 			},	// 성공 end
 			error: function (xhr, status) {
 				alert(xhr.status + ' / ' + status);

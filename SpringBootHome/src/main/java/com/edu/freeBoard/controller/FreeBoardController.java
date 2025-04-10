@@ -88,38 +88,57 @@ public class FreeBoardController {
 	
 	// 게시판 수정 화면 생성
 	@GetMapping("/{freeBoardId}")
-	public ResponseEntity<FreeBoardVo> 
+	public ResponseEntity<Map<String, Object>> 
 		freeBoardUpdate(@PathVariable int freeBoardId){
 		logger.info(logTitleMsg);
 		logger.info("@GetMapping freeBoardUpdate freeBoardId: {}", freeBoardId);
 		
-		FreeBoardVo freeBoardVo = freeBoardService.freeBoardSelectOne(freeBoardId);
+		Map<String, Object> resultMap = 
+			freeBoardService.freeBoardSelectOne(freeBoardId);
 		
-		return ResponseEntity.ok(freeBoardVo);
+		return ResponseEntity.ok(resultMap);
 	}
 	
 	// 게시판 수정 db
 	@PatchMapping("/{freeBoardId}")
 	public ResponseEntity<?> 
 		freeBoardUpdateCtr(@PathVariable int freeBoardId, 
-			@RequestBody FreeBoardVo freeBoardVo){
+			@RequestParam Map<String, String> freeBoardMap
+			, MultipartHttpServletRequest mhr
+			, @RequestParam(value = "delFreeBoardFileIdList", required = false)
+				List<Integer> delFreeBoardFileIdList){
+		
 		logger.info(logTitleMsg);
 		logger.info("@PatchMapping freeBoardUpdateCtr "
-			+ "freeBoardId: {}, freeBoardVo: {}", freeBoardId, freeBoardVo);
+			+ "freeBoardId: {}, freeBoardMap: {}, " 
+			+ "delFreeBoardFileIdList: {}"
+			, freeBoardId, freeBoardMap, delFreeBoardFileIdList);
 		
-		if(freeBoardVo.getMemberNo() == 0) {
+		FreeBoardVo freeBoardVo = new FreeBoardVo();
+		freeBoardVo.setFreeBoardId(freeBoardId);
+		freeBoardVo.setMemberNo(Integer.parseInt(freeBoardMap.get("memberNo")));
+		freeBoardVo.setFreeBoardTitle(freeBoardMap.get("freeBoardTitle"));
+		freeBoardVo.setFreeBoardContent(freeBoardMap.get("freeBoardContent"));
+		
+		try {
+			freeBoardService.freeBoardUpdateOne(freeBoardVo, mhr
+				, delFreeBoardFileIdList);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			
 			Map<String, String> errorResponseMap = new HashMap<>();
 			errorResponseMap.put("errorMsg", "게시판 ID가 일치하지 않습니다.");
 			
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.contentType(MediaType.APPLICATION_JSON).body(errorResponseMap);
+			
 		}
 		
-		System.err.println("??있나? " + freeBoardVo.getMemberNo());
+		// 어제 수업하다 오류난 selectOne 수정함
+		Map<String, Object> resultMap = 
+			freeBoardService.freeBoardSelectOne(freeBoardId);
 		
-		freeBoardService.freeBoardUpdateOne(freeBoardVo);
-		freeBoardVo = freeBoardService.freeBoardSelectOne(freeBoardId);
-		
-		return ResponseEntity.ok(freeBoardVo);
+		return ResponseEntity.ok(resultMap);
 	}
 }

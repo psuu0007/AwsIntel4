@@ -1,6 +1,7 @@
 package com.edu.freeBoard.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -13,7 +14,10 @@ public interface FreeBoardService {
 	public void freeBoardInsertOne(FreeBoardVo freeBoardVo, 
 		MultipartHttpServletRequest mhr) throws Exception;
 	
-	public FreeBoardVo freeBoardSelectOne(int freeBoardId);
-	public void freeBoardUpdateOne(FreeBoardVo freeBoardVo);
+	public Map<String, Object> freeBoardSelectOne(int freeBoardId);
+	
+	public void freeBoardUpdateOne(FreeBoardVo freeBoardVo
+		, MultipartHttpServletRequest mhr
+		, List<Integer> delFreeBoardFileIdList) throws Exception;
 	
 }

@@ -48,7 +48,8 @@ table, th, tr, td{
 
 </head>
 <body>
-
+	
+	
 
 	<jsp:include page="/WEB-INF/views/Header.jsp"/>
 

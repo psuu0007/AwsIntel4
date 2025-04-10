@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.edu.freeBoard.controller.FreeBoardController;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,7 +37,7 @@ public class FileUtils {
 		
 		while(iterator.hasNext()) {
 			multipartFile = mhr.getFile(iterator.next());
-			
+		//	
 			if(multipartFile.isEmpty() == false) {
 				originalFileName = multipartFile.getOriginalFilename();
 				originalFileExtension = originalFileName.substring(
@@ -58,5 +59,23 @@ public class FileUtils {
 		}
 		
 		return fileList;
+	}
+
+	public void parseDeleteFileInfo(List<Map<String, Object>> tempFileList) 
+		throws Exception{
+		// TODO Auto-generated method stub
+	
+		for (Map<String, Object> tempFileMap : tempFileList) {
+			String storedFileName = (String)tempFileMap.get("STORED_FILE_NAME");
+			
+			File file = new File(filePath + "/" + storedFileName);
+			
+			if(file.exists()) {
+				file.delete();
+			}else {
+				System.out.println("파일이 존재하지 않습니다.");
+			}
+		}
+		
 	}
 }

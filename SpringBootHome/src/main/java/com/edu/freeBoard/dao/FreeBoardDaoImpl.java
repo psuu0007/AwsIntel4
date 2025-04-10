@@ -44,6 +44,14 @@ public class FreeBoardDaoImpl implements FreeBoardDao{
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(namespace + "freeBoardSelectOne", freeBoardId);
 	}
+	
+	@Override
+	public List<Map<String, Object>> freeBoardFileSelectList(int freeBoardId) {
+		// TODO Auto-generated method stub
+		
+		return sqlSession.selectList(namespace + "freeBoardFileSelectList"
+			, freeBoardId);
+	}
 
 	@Override
 	public void freeBoardUpdateOne(FreeBoardVo freeBoardVo) {
@@ -56,5 +64,23 @@ public class FreeBoardDaoImpl implements FreeBoardDao{
 		// TODO Auto-generated method stub
 		sqlSession.insert(namespace + "freeBoardFileInsertOne", map);
 	}
+	
+////////////////////////////
+	@Override
+	public List<Map<String, Object>> fileSelectStoredFileName(
+		List<Integer> freeBoardFileIdList) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(namespace + "fileSelectStoredFileName"
+			, freeBoardFileIdList);
+	}
+
+	@Override
+	public int deleteFileByFreeBoardFileIds(List<Integer> delFreeBoardFileIdList) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete(namespace + "deleteFileByFreeBoardFileIds"
+			, delFreeBoardFileIdList);
+	}
+
+	
 
 }

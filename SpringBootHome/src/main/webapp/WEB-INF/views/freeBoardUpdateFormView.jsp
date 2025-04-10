@@ -48,6 +48,12 @@ table, th, tr, td{
 </head>
 <body>
 
+	<img alt="image not found" src="/img/" 
+		style="width: 150px;" />
+	<span>
+	<input type="button" value="수정">
+	<input type="button" value="삭제">
+	</span>
 
 	<jsp:include page="/WEB-INF/views/Header.jsp"/>
 

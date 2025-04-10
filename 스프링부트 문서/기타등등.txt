@@ -24,3 +24,9 @@ Ajax(비동기 통신)
 9.언제나 집합으로 작업
 10.여러 동작을 한줄에 작성 -> 임시변수 사용을 최소화하거나 불필요한 반복을 피함(체이닝 메서드 기법)
 11.모든 사람에게 무료로 제공한다
+
+
+HttpServletRequest	vs 	MultipartHttpServletRequest
+기본					vs 	특별
+form태그 전부				form에서 파일같은 특별한 것만
+기본적인 데이터들			stream 데이터들

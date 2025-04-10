@@ -44,6 +44,15 @@
 		FROM FREE_BOARD
 	</select>
 	
+<!-- 	<insert id="freeBoardInsertOne"  -->
+<!-- 		parameterType="com.edu.freeBoard.domain.FreeBoardVo"> -->
+<!-- 		INSERT INTO FREE_BOARD -->
+<!-- 		VALUE(FREE_BOARD_ID, MEMBER_NO, FREE_BOARD_TITLE, FREE_BOARD_CONTENT -->
+<!-- 			, CREATE_DATE, UPDATE_DATE) -->
+<!-- 		VALUES(FREE_BOARD_ID_SEQ.NEXTVAL, #{memberNo}, #{freeBoardTitle} -->
+<!-- 			, #{freeBoardContent}, SYSDATE, SYSDATE) -->
+<!-- 	</insert> -->
+	
 	<insert id="freeBoardInsertOne" 
 		parameterType="com.edu.freeBoard.domain.FreeBoardVo"
 		useGeneratedKeys="true" keyProperty="freeBoardId">
@@ -68,6 +77,17 @@
 		WHERE FB.FREE_BOARD_ID = #{freeBoardId}
 	</select>
 	
+	<select id="freeBoardFileSelectList" parameterType="int"
+		resultType="map">
+		SELECT FBF.FREE_BOARD_FILE_ID as "freeBoardFileId"
+		    , FBF.FREE_BOARD_ID "freeBoardId"
+		    , FBF.ORIGINAL_FILE_NAME as "originalFileName"
+		    , FBF.STORED_FILE_NAME as "storedFileName"
+		    , ROUND(FBF.FREE_BOARD_FILE_SIZE/1024, 1) as "freeBoardFileSize" 
+		FROM FREE_BOARD_FILE FBF
+		WHERE FBF.FREE_BOARD_ID = #{freeBoardId}
+	</select>
+	
 	<update id="freeBoardUpdateOne" parameterType="FreeBoardVo">
 		UPDATE FREE_BOARD	
 		<set>
@@ -90,6 +110,28 @@
 		VALUES(FREE_BOARD_FILE_ID_SEQ.NEXTVAL, #{parentId}, #{originalFileName}
 			, #{storedFileName}, #{fileSize}, SYSDATE, SYSDATE)
 	</insert>
+	
+	
+	<select id="fileSelectStoredFileName" parameterType="list"
+		resultType="map">
+		SELECT FREE_BOARD_FILE_ID, STORED_FILE_NAME
+		FROM FREE_BOARD_FILE
+		WHERE FREE_BOARD_FILE_ID IN
+		<foreach item="freeBoardFileId" collection="list" open="("
+			separator="," close=")">
+			#{freeBoardFileId}
+		</foreach>
+	</select>
+	
+	<delete id="deleteFileByFreeBoardFileIds" parameterType="list">
+		DELETE FROM FREE_BOARD_file
+		WHERE FREE_BOARD_FILE_ID IN
+		<foreach item="freeBoardFileId" collection="list" open="("
+			separator="," close=")">
+			#{freeBoardFileId}
+		</foreach>
+	</delete>
+	
 	
 </mapper>
 
