@@ -24,4 +24,8 @@ public interface FreeBoardDao {
 		List<Integer> freeBoardFileIdList);
 	public int deleteFileByFreeBoardFileIds(List<Integer> delFreeBoardFileIdList);
 	
+	public List<Map<String, Object>> selectFileByFreeBoardId(int freeBoardId);
+	public void deleteFileByFreeBoardFileId(int freeBoardId);
+	public void freeBoardDeleteOne(int freeBoardId, int memberNo);
+	
 }

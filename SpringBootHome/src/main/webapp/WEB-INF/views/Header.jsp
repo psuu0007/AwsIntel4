@@ -7,8 +7,13 @@
 		location.href = '/member/list';
 	}
 	
-	function pageMoveFreeBoardListFnc() {
-		location.href = '/freeBoard/list';
+	function pageMoveFreeBoardListFnc(curPage) {
+		if(curPage){
+			location.href = '/freeBoard/list?curPage=' + curPage;
+		}else{
+			location.href = '/freeBoard/list';		
+		}
+		
 	}
 </script>
 

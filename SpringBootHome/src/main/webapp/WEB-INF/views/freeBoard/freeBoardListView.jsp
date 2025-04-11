@@ -51,6 +51,33 @@ tr > th{
 </style>
 
 <script type="text/javascript">
+	var fileUpdateCnt = 0;
+	
+	// 이미지 수정
+	function myImgFileUpdateFnc(updateFile) {
+		var updateFileTag = $(updateFile);
+		
+		updateFileTag.attr('name', 'updateFreeBoardFileArr' + fileUpdateCnt);
+		fileUpdateCnt++;
+		
+		var fileObj = updateFileTag[0].files[0];
+		
+		var parentLiTag = updateFileTag.closest('li');
+		var imgTag = parentLiTag.children('img');
+		
+		if(fileObj){
+			var reader = new FileReader();
+			
+			reader.onload = function(e) {
+				imgTag.attr('src', e.target.result);
+			};
+			
+			reader.readAsDataURL(fileObj);
+		}
+		parentLiTag.append('<span delfileid="'+imgTag.attr('fileid')+'"></span>');
+		
+	} // myImgFileUpdateFnc end
+
 // 	db에 있는 파일들 화면 만들기
 	function storeFileListMakeUlFnc(freeBoardFileList) {
 		const storeFileListUl = $('#storeFileList');
@@ -72,19 +99,33 @@ tr > th{
 			liHtmlStr = freeBoardFileList[i].originalFileName
 				+ '&nbsp;&nbsp;'
 				+ freeBoardFileList[i].freeBoardFileSize + '(kb)'
+				
 				+ '<img alt="image not found" src="/img/' 
 				+ freeBoardFileList[i].storedFileName
-				+ '" style="width: 150px;" />'
++ '" style="width: 150px;" fileid="'+ freeBoardFileList[i].freeBoardFileId +'"/>'
 				+ '<span>'
-				+ '<input type="button" value="수정">'
-				+ '<input type="button" value="삭제">'
+				
++ '<input type="file" value="수정" onchange="myImgFileUpdateFnc(this);">'
+				
+				+ '<input type="button" value="삭제" id="imgFileDel'+ i +'">'
 				+ '</span>';   
 				
 				listItem.innerHTML = liHtmlStr;
 				storeFileListUl.append(listItem);
 		}
+		
+		$('input[id^="imgFileDel"]').on('click', function(e) {
+			e.preventDefault();
+			
+			var parentLi = $(this).closest('li');
+			var imgTag = parentLi.find('img');
+			
+			parentLi.html('<span delfileid="'+ imgTag.attr('fileid') +'">' 
+				+ '이미지가 삭제되었습니다</span>');
+		});
+	
 	} // storeFileListMakeUlFnc end
-
+	
 	$(document).ready(function() {
 		
 		// 글쓰기 db저장하는 로직&화면
@@ -216,8 +257,11 @@ htmlStr += '</div>';
 		let freeBoardIdStr = parentTr.children().eq(0).text();
 // 		alert(freeBoardIdStr);
 		
+		var curPageInput = $('#curPage');
+		
 		$.ajax({
-			url: '/freeBoard/' + freeBoardIdStr,
+			url: '/freeBoard/' + freeBoardIdStr 
+				+ '?curPage=' + curPageInput.val(),
 			method: 'GET',
 			dataType: 'json',
 			success: function (data) {
@@ -225,6 +269,9 @@ htmlStr += '</div>';
 				
 				var freeBoardVo = data.freeBoardVo;
 				var freeBoardFileList = data.freeBoardFileList;
+				var curPageStr = data.curPage;
+				
+				console.log('curPageStr: ' + curPageStr);
 
 				let createDate = new Date(freeBoardVo.createDate).toLocaleString('ko-KR', {
 					year: 'numeric',
@@ -287,14 +334,25 @@ htmlStr += '</div>';
 if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 	htmlStr += '<div>';
 	htmlStr += '<span>';
-	htmlStr += '<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>';
+	
+	htmlStr += '<button onclick="pageMoveFreeBoardListFnc('+curPageStr+');">';
+	htmlStr += '이전 페이지</button>';
 	htmlStr += '<button onclick="restRequestFreeBoardUpdateCtrFnc();">수정완료</button>';
+	
+	htmlStr += '<input type="button" value="삭제하기"';
+	htmlStr += ' onclick="restRequestFreeBoardDeleteCtrFnc(' 
+			+ freeBoardVo.freeBoardId + ' ,' + freeBoardVo.memberNo + ', '
+			+ curPageStr + ');">';
+	
 	htmlStr += '</span>';
 	htmlStr += '</div>';
 }else{
 	htmlStr += '<div>';
 	htmlStr += '<span>';
-	htmlStr += '<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>';
+	
+	htmlStr += '<button onclick="pageMoveFreeBoardListFnc('+curPageStr
+			+  ');">이전 페이지</button>';
+	
 	htmlStr += '</span>';
 	htmlStr += '</div>';
 }
@@ -335,8 +393,7 @@ if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 		var freeBoardIdTag = $('#freeBoardId');
 		var freeBoardTitleTag = $('#freeBoardTitle');
 		var freeBoardContentTag = $('#freeBoardContent');
-		
-		
+				
 		var formDataObj = new FormData();
 		
 		formDataObj.append('freeBoardId', 0);
@@ -347,10 +404,21 @@ if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 		var storeFileListUl = $('#storeFileList');
 		console.log(storeFileListUl);
 		
+		// 파일 데이터 수정 관련 변수
+		const updateFreeBoardFileArr =
+			$('#storeFileList').find('input[name^=updateFreeBoardFileArr]');
+		
+		if(updateFreeBoardFileArr.length > 0){
+			for (let i = 0; i < updateFreeBoardFileArr.length; i++) {
+				formDataObj.append(updateFreeBoardFileArr.eq(i).attr('name'), 
+					updateFreeBoardFileArr[i].files[0]);
+			}
+		}
+		
+		
 // 		수정완료 페이지에서 삭제할 파일 처리
 		storeFileListUl.find('span[delfileid]').each(function(index, item) {
-			formDataObj.append('delFreeBoardFileIdList'
-				, $(item).attr('delfileid'));
+			formDataObj.append('delFreeBoardFileIdList', $(item).attr('delfileid'));
 		});
 		
 		const inputFreeBoardFileArr = $('#inputFreeBoardFile')[0].files;
@@ -418,7 +486,6 @@ if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 		</tr>	
 	</table>
 	
-// 	수정페이지에서 파일 관리 화면
 	<div id="fileContainer" style="border: 1px solid black;">
 		<label for="inputFreeBoardFile">파일</label>
 		<input type="file" id="inputFreeBoardFile" name="freeBoardFileList" 
@@ -431,7 +498,11 @@ if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 		<span>
 			<button onclick="pageMoveFreeBoardListFnc();">목록 페이지</button>
 			<button onclick="restRequestFreeBoardUpdateCtrFnc();">수정 완료</button>
-			<input type="button" value="삭제하기" onclick="alert('미완성');">
+			
+			<input type="button" value="삭제하기" 
+				onclick="restRequestFreeBoardCtrFnc(\${freeBoardVo.freeBoardId}
+				, \${freeBoardVo.memberNo}, 1);">
+			
 		</span>
 	</div>
 				`;
@@ -455,6 +526,28 @@ if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 		
 		
 	}  // restRequestFreeBoardUpdateCtrFnc end
+	
+	// 자유게시판 삭제 로직
+	function restRequestFreeBoardDeleteCtrFnc(freeBoardId, memberNo, curPageStr) {
+		
+		console.log("freeBoardId: " + freeBoardId);
+		
+		$.ajax({
+			url: '/freeBoard/' + freeBoardId
+				+ '?memberNo=' + memberNo + '&curPage=' + curPageStr,
+			method: 'DELETE',
+			dataType: 'text',
+			success: function(data) {
+				var curPage = data;
+				
+				location.href = './list' + '?curPage=' + curPage;
+			},
+			error: function(xhr, status) {
+				alert(xhr.status + " / " + status);
+			}
+		}); // ajax end
+		
+	} // restRequestFreeBoardCtrFnc end
 	
 </script>
 
