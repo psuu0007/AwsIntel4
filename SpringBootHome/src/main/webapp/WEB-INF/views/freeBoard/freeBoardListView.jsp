@@ -500,7 +500,7 @@ if(freeBoardVo.memberNo == InputSessionMemberNoTag.val()){
 			<button onclick="restRequestFreeBoardUpdateCtrFnc();">수정 완료</button>
 			
 			<input type="button" value="삭제하기" 
-				onclick="restRequestFreeBoardCtrFnc(\${freeBoardVo.freeBoardId}
+				onclick="restRequestFreeBoardDeleteCtrFnc(\${freeBoardVo.freeBoardId}
 				, \${freeBoardVo.memberNo}, 1);">
 			
 		</span>
