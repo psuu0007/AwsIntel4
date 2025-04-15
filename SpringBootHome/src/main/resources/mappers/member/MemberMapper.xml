@@ -14,7 +14,7 @@
 			javaType="java.util.Date" />
 		<result column="MOD_DATE" property="modifyDate" 
 			javaType="java.util.Date"/>
-			
+		<result column="PROVIDER" property="provider" />	
 	</resultMap>
 
 	<select id="memberSelectList" resultMap="memberResultMap">
@@ -25,7 +25,7 @@
 	
 	<select id="memberExist" parameterType="map"
 		resultMap="memberResultMap">
-		SELECT MEMBER_NO, MEMBER_NAME, EMAIL
+		SELECT MEMBER_NO, PROVIDER, MEMBER_NAME, EMAIL, PWD
 		FROM MEMBER
 		WHERE EMAIL = #{email} AND PWD = #{pwd}
 	</select>
@@ -58,6 +58,20 @@
 		DELETE 	FROM MEMBER 
 		WHERE 	MEMBER_NO = #{value}
 	</delete>
+	
+	<select id="googleMemberExist" parameterType="string"
+		resultMap="memberResultMap">
+		SELECT MEMBER_NO, PROVIDER, MEMBER_NAME, EMAIL, PWD
+		FROM MEMBER
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<select id="findMemberByEmail" parameterType="string"
+		resultMap="memberResultMap">
+		SELECT MEMBER_NO, PROVIDER, MEMBER_NAME, EMAIL, PWD
+		FROM MEMBER
+		WHERE EMAIL = #{email}
+	</select>
 	
 </mapper>
 

@@ -26,14 +26,27 @@
 		자유게시판
 	</span>
 	
-	<c:if test="${sessionScope.member.email ne null}">
+	<c:if test="${sessionScope.member ne null}">
 	
 	<span style="float:right;">
 		${member.memberName}
 		
 		<input type="hidden" id="inputMemberNo" value="${member.memberNo}">
-		<a style="color:white;" 
-			href='<c:url value="/member/logout"/>'>로그아웃</a>
+		
+		<c:choose>
+			<c:when test="${member.provider eq 'google'}">
+			<a style="color:white;" 
+				href='<c:url value="/auth/logout"/>'>로그아웃</a>
+			</c:when>
+			
+			<c:otherwise>
+			<a style="color:white;" 
+				href='<c:url value="/member/logout"/>'>로그아웃</a>
+			</c:otherwise>
+			
+		</c:choose>
+		
+		
 	</span>
 	
 	</c:if>

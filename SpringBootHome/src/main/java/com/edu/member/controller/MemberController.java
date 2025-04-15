@@ -31,31 +31,31 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
-	@GetMapping("/login")
-	public String login(Model model) {
-		logger.info(logTitleMsg);
-		logger.info("login");
-		
-		return "member/loginFormView";
-	}
+//	@GetMapping("/login")
+//	public String login(Model model) {
+//		logger.info(logTitleMsg);
+//		logger.info("login");
+//		
+//		return "member/loginFormView";
+//	}
 	
-	@PostMapping("/login")
-	public String getLogin(String email, String password,
-		HttpSession session, Model model) {
-		logger.info(logTitleMsg);
-		logger.info("login! " + email + ", " + password);
-		
-		MemberVo memberVo = memberService.memberExist(email, password);
-		
-		if(memberVo != null) {
-			session.setAttribute("member", memberVo);
-			
-			return "redirect:/member/list";
-		}else {
-			return "/member/loginFailView";
-		}
-		
-	}
+//	@PostMapping("/login")
+//	public String getLogin(String email, String password,
+//		HttpSession session, Model model) {
+//		logger.info(logTitleMsg);
+//		logger.info("login! " + email + ", " + password);
+//		
+//		MemberVo memberVo = memberService.memberExist(email, password);
+//		
+//		if(memberVo != null) {
+//			session.setAttribute("member", memberVo);
+//			
+//			return "redirect:/member/list";
+//		}else {
+//			return "/member/loginFailView";
+//		}
+//		
+//	}
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session, Model model) {

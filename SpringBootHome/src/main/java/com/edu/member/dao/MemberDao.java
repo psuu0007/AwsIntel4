@@ -12,6 +12,10 @@ public interface MemberDao {
 	public MemberVo memberSelectOne(int memberNo);
 	
 	public int memberUpdateOne(MemberVo memberVo);
-	
 	public int memberDeleteOne(int no);
+	
+	// 일반 계정 확인(비밀번호 없는 형태)
+	public MemberVo findMemberByEmail(String email);
+	// 구글 계정 확인
+	public MemberVo googleMemberExist(String email);
 }

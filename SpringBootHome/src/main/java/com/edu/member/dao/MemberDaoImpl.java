@@ -59,4 +59,16 @@ public class MemberDaoImpl implements MemberDao{
 		// TODO Auto-generated method stub
 		return sqlSession.delete(namespace + "memberDeleteOne", no);
 	}
+
+	@Override
+	public MemberVo findMemberByEmail(String email) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + "findMemberByEmail", email);
+	}
+
+	@Override
+	public MemberVo googleMemberExist(String email) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + "googleMemberExist", email);
+	}
 }

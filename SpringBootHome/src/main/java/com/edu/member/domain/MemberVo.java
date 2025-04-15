@@ -11,12 +11,15 @@ public class MemberVo {
 	private Date createDate;
 	private Date modifyDate;
 	
+	private String provider;
+	
 	public MemberVo() {
 		super();
 	}
 
-	public MemberVo(int memberNo, String email, String memberName, 
-		String password, Date createDate, Date modifyDate) {
+	public MemberVo(int memberNo, String email, String memberName
+			, String password, Date createDate, Date modifyDate,
+			String provider) {
 		super();
 		this.memberNo = memberNo;
 		this.email = email;
@@ -24,6 +27,7 @@ public class MemberVo {
 		this.password = password;
 		this.createDate = createDate;
 		this.modifyDate = modifyDate;
+		this.provider = provider;
 	}
 
 	public int getMemberNo() {
@@ -74,6 +78,14 @@ public class MemberVo {
 		this.modifyDate = modifyDate;
 	}
 
+	public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -89,6 +101,8 @@ public class MemberVo {
 		builder.append(createDate);
 		builder.append(", modifyDate=");
 		builder.append(modifyDate);
+		builder.append(", provider=");
+		builder.append(provider);
 		builder.append("]");
 		return builder.toString();
 	}
